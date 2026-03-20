@@ -1,5 +1,21 @@
 # Changelog
 
+## v5.27.0 (2026-03-18)
+
+### Bug Fixes
+- **Accent color not persisting** — manually picking an accent color from the picker didn't disable randomization, so the next page load or tab switch would randomize over the user's choice. Picker now auto-disables randomization and syncs the toggle state
+- **Apps silently removed from target.txt** — `cleanup_dead_apps` relied solely on `pm list packages -3` which can be filtered by HideMyAppList or miss apps in other user profiles. Now cross-checks `/data/data/<pkg>` existence and requires 3 consecutive misses before removing, preventing false removals during app updates or when HMA is active
+- **WebUI save race with daemon** — `target.txt` was written non-atomically (`echo > file`), allowing the daemon to read a truncated file mid-write. Now uses temp-file-then-rename
+
+---
+
+## v5.26.0 (2026-03-17)
+
+### Bug Fixes
+- **Custom ROM version wiped by propclean** — `hexpatch_deleteprop` was destroying all properties matching ROM fingerprint substrings (e.g. `crdroid`), including `ro.crdroid.build.version` which crDroid needs for its About screen and OTA updater. Now auto-detects the running ROM by checking for `ro.<fingerprint>*` properties before wiping — if the device owns those props, they're preserved. Generic fix that works for any ROM in the fingerprint list (LineageOS, EvolutionX, PixelOS, etc.)
+
+---
+
 ## v5.25.0 (2026-03-14)
 
 ### Bug Fixes
